@@ -2,9 +2,9 @@
 
 🦞 An always-on personal AI agent running on EC2, talking to Claude Sonnet via Amazon Bedrock, reachable through Telegram. Configuration is plain markdown. Memory is plain markdown. The whole thing is six prompt files and a deploy script.
 
-This repo is a **public companion** to a private working repo. It contains the architecture, the design notes, the prompt-engineering patterns, and the build narrative — not the runtime config or personal data. It's documentation, not a deployable.
+This repo is a **public companion** to a private working repo. It contains the architecture, the design notes, the prompt-engineering patterns, the build narrative, and a set of agent-readable skills that walk an AI coding assistant through deploying OpenClaw for a new user.
 
-> If you want to deploy this for yourself: don't fork this repo. Read the architecture, then build your own. The pattern is portable; the config is personal.
+> **Want to deploy your own?** Start with [`docs/getting-started.md`](docs/getting-started.md). The recommended path is AI-assisted: open this repo in Cursor or Claude Code, point your agent at [`.cursor/skills/`](.cursor/skills/), and walk through the skills in order. Expected effort: ~2 hours clock time, ~30 minutes active attention.
 
 ---
 
@@ -126,21 +126,32 @@ No cloud database. No vector store. The whole memory is a few hundred KB of mark
 
 ```
 openclaw-public/
-├── README.md                  ← you are here
-├── LICENSE                    ← MIT
+├── README.md                          ← you are here
+├── LICENSE                            ← MIT
 ├── docs/
-│   ├── architecture.md        ← session model, prompt assembly, compaction, three-tier memory
-│   ├── origin.md              ← the build story + 13-bug appendix (the interesting reading)
-│   ├── alfred-design.md       ← email-triage subsystem design (CloudFormation, Step Functions, Bedrock)
-│   ├── cost-model.md          ← per-component cost breakdown across light/moderate/heavy usage
-│   └── research/              ← background research that informed the design
-└── patterns/
-    ├── SOUL.example.md        ← prompt-engineering pattern: tone and personality
-    ├── IDENTITY.example.md    ← prompt-engineering pattern: self-description
-    ├── USER.example.md        ← prompt-engineering pattern: user profile
-    ├── TOOLS.example.md       ← prompt-engineering pattern: tool catalog
-    ├── AGENTS.example.md      ← prompt-engineering pattern: operating rules
-    └── MEMORY.example.md      ← prompt-engineering pattern: long-term memory
+│   ├── getting-started.md             ← start here if you want to deploy your own
+│   ├── architecture.md                ← session model, prompt assembly, compaction, memory
+│   ├── origin.md                      ← the build story + 13-bug appendix (interesting reading)
+│   ├── alfred-design.md               ← email-triage subsystem design
+│   ├── cost-model.md                  ← per-component cost breakdown
+│   └── research/                      ← background research that informed the design
+├── patterns/                          ← prompt-engineering pattern templates (the six files)
+│   ├── README.md
+│   ├── SOUL.example.md                ← personality and tone
+│   ├── IDENTITY.example.md            ← self-description and capabilities
+│   ├── USER.example.md                ← user profile
+│   ├── TOOLS.example.md               ← tool catalog
+│   ├── AGENTS.example.md              ← operating rules
+│   └── MEMORY.example.md              ← long-term memory
+└── .cursor/skills/                    ← AI-agent-readable skills for deploying your own
+    ├── README.md
+    ├── openclaw-prerequisites/        ← AWS/Bedrock/SSM/Telegram setup verification
+    ├── openclaw-aws-bootstrap/        ← provision EC2, IAM, S3, SSM access
+    ├── openclaw-customize-workspace/  ← turn patterns into your real workspace
+    ├── openclaw-deploy/               ← sync workspace to EC2, run the gateway
+    ├── openclaw-channel-setup/        ← connect a Telegram bot
+    ├── openclaw-research-pipeline/    ← optional: deep research + indexed library
+    └── openclaw-troubleshooting/      ← symptom → cause → fix reference
 ```
 
 What's deliberately **not** here: the runtime config, the deploy scripts, the Lambda implementation, the actual personal `MEMORY.md`. Those live in a private working repo. This one is for reading.
@@ -169,4 +180,4 @@ The point isn't the specific persona. It's that **personality is config**. A fif
 
 Active personal project. Built over three days in April 2026 by [Will Prior](https://github.com/ford-at-home). Read [`docs/origin.md`](docs/origin.md) for the build story.
 
-Not designed to be cloned and deployed by strangers. The architecture is the artifact; copy the pattern, build your own.
+This repo is documentation + agent-readable setup skills — not a maintained product. Issues and PRs are welcome but not promised attention. If you deploy your own using these skills and hit something the troubleshooting skill doesn't cover, opening an issue is fine; expect "best effort" responses, not SLA-grade support.
