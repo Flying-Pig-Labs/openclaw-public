@@ -30,6 +30,8 @@ Sessions persist until a reset condition occurs:
 
 ## Context injection per request
 
+![Context assembly layers — workspace files, daily logs, session history, and user message stacked into the prompt](images/context-assembly-layers.png)
+
 Every incoming message triggers a full prompt assembly in this order:
 
 1. System-level framework instructions
@@ -92,6 +94,8 @@ Workspace files (`SOUL.md`, `USER.md`, `TOOLS.md`, `AGENTS.md`, `MEMORY.md`) are
 
 ## Three-tier memory
 
+![Memory legibility — flat markdown tiers from session JSONL up to curated MEMORY.md](images/memory-legibility.png)
+
 | Tier | Location | Scope | Created by |
 |---|---|---|---|
 | Session history | `~/.openclaw/agents/.../sessions/<id>.jsonl` | Per-session, ephemeral at reset | Gateway, automatic |
@@ -99,6 +103,8 @@ Workspace files (`SOUL.md`, `USER.md`, `TOOLS.md`, `AGENTS.md`, `MEMORY.md`) are
 | Long-term curated | `~/.openclaw/workspace/MEMORY.md` | Distilled facts across all sessions | Agent promotes during heartbeats |
 
 Without `MEMORY.md` and the `memory/` directory, the agent has zero cross-session recall. It remembers within a session but forgets everything on daily reset.
+
+![The heartbeat — periodic loop that promotes recurring facts from daily logs into long-term memory](images/the-heartbeat.png)
 
 The heartbeat process reviews daily logs and promotes recurring facts (mentioned 3+ times) into `MEMORY.md`, creating a self-improving memory loop without user intervention.
 
@@ -137,6 +143,8 @@ Tool results (web scrapes, code output) are the largest source of token consumpt
 
 ## Comparison: OpenClaw vs ChatGPT
 
+![Paradigm shift — stateless request/response vs stateful, owned, persistent agent loop](images/paradigm-shift-stateless-vs-stateful.png)
+
 | Feature | ChatGPT | OpenClaw |
 |---|---|---|
 | History storage | Managed cloud DB | Local JSONL on a VM you own |
@@ -149,3 +157,9 @@ Tool results (web scrapes, code output) are the largest source of token consumpt
 The key difference: ChatGPT manages history server-side invisibly. OpenClaw packages the entire relevant state into the prompt on every turn. More transparent, more controllable, more expensive per-token — but you own everything.
 
 OpenClaw's proactive heartbeat is the structural advantage: it can wake up, check something, and message you on Telegram without any incoming trigger. ChatGPT cannot.
+
+## The ReAct loop in practice
+
+![ReAct loop — model reasons, calls a tool, gets a result, decides what to do next](images/react-loop.png)
+
+Every turn that touches a tool is a small ReAct loop: the model reasons about what to do, picks a tool from `TOOLS.md`, calls it, receives the result back into the conversation, and decides whether to call another tool or respond. There's no fixed depth limit — the gateway just keeps feeding tool results back until the model stops asking for tools.

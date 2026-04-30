@@ -62,6 +62,8 @@ Full breakdown: [`cost-model.md`](cost-model.md).
 
 ## What you'll end up with
 
+![Voice memo to knowledge base — audio in, transcribed, integrated into the wiki, available for recall](images/voice-to-knowledge-pipeline.png)
+
 A personal AI assistant on AWS:
 
 - Reachable from Telegram (DMs and group topics)

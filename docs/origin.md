@@ -13,11 +13,15 @@ The story of how OpenClaw came together over three days in April 2026 — the ar
 
 ## What changed
 
+![Three enabling conditions — context windows, instruction following at depth, and cost](images/three-enabling-conditions.png)
+
 Three things converged between 2023 and 2026:
 
 1. **Context windows grew by two orders of magnitude.** Claude Sonnet 4.6 has a 200,000-token context window. Workspace files are ~6,650 tokens — 3% of that window. Re-injecting personality, profile, tools, and curated memory on every turn is suddenly free.
 2. **Models crossed the instruction-following threshold at depth.** Earlier models degraded as context grew — instructions buried at depth got progressively ignored. Sonnet 4.6 holds them through the entire window.
 3. **Inference costs dropped** to where persistence is a feature, not a budget decision. Prompt caching brings input tokens to $0.30/M instead of $3.00/M.
+
+![Model class cliff — older models degrade as context grows; newer models hold instructions at depth](images/model-class-cliff.png)
 
 ---
 
@@ -100,6 +104,8 @@ Fixed per-task pricing ($0.005–$0.250 depending on tier), not per-token. Predi
 
 **The working loop.** Error → feed to model → fix or diagnostic step → run → feed output back. Human driving, AI navigating when the environment gets noisy. The loop is the product.
 
+![Two loops — outer human development loop wrapping the inner agent task loop](images/two-loops-development-workflow.png)
+
 ---
 
 ## Bug appendix
@@ -111,6 +117,8 @@ The bugs that taught the most. Most are small. A few are structural.
 **Bug 2: SSM + WebSockets.** SSM port forwarding drops persistent WebSocket connections. The OpenClaw control UI's QR-flow (for WhatsApp pairing) requires a persistent WebSocket. Three hours lost to this.
 
 **Bug 3: WhatsApp death spiral.** Health monitor restarts → stale credentials → Baileys retries → rate limit → repeat. Fix: stop service, delete credentials, pair fresh via terminal QR. Don't use WhatsApp for bots.
+
+![WhatsApp death spiral — restart → stale creds → retry → rate limit → restart](images/whatsapp-death-spiral.png)
 
 **Bug 4: Wrong Telegram config key.** `token` rejected, `botToken` required. Schema validator catches it but doesn't name the field.
 

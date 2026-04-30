@@ -54,34 +54,7 @@ Full breakdown: see [`docs/cost-model.md`](docs/cost-model.md).
 
 ## Architecture at a glance
 
-```
-                    ┌─────────────────────────────────────┐
-                    │   Telegram (DMs + group topics)     │
-                    └──────────────────┬──────────────────┘
-                                       │
-                                       ▼
-                            ┌────────────────────┐
-                            │  EC2 (t4g.medium)  │
-                            │  OpenClaw gateway  │
-                            └────────┬───────────┘
-                                     │
-                ┌────────────────────┼────────────────────┐
-                ▼                    ▼                    ▼
-        ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-        │   Bedrock    │    │ Workspace MD │    │    Tools     │
-        │ Claude 4.6   │    │ (6 files,    │    │ (research,   │
-        │              │    │  ~6.6K tok)  │    │  transcribe, │
-        └──────────────┘    └──────────────┘    │  publish, …) │
-                                                └──────┬───────┘
-                                                       │
-                            ┌──────────────────────────┼──────────────────────────┐
-                            ▼                          ▼                          ▼
-                    ┌──────────────┐          ┌──────────────┐          ┌──────────────┐
-                    │ AWS Transcribe│         │  Parallel AI │          │   GitHub     │
-                    │   + S3 stage │          │   Task API   │          │   research   │
-                    │              │          │              │          │   library    │
-                    └──────────────┘          └──────────────┘          └──────────────┘
-```
+![OpenClaw system architecture](docs/images/openclaw-system-architecture.png)
 
 Detailed mechanics — sessions, prompt assembly, compaction, context injection, three-tier memory — are in [`docs/architecture.md`](docs/architecture.md).
 
